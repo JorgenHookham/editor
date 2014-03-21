@@ -21,7 +21,7 @@ def count_question_answers(client, question, num_days=None):
         for snapshot in content['snapshots']:
             for response in snapshot['responses']:
                 if response['questionPrompt'].lower() == question.lower():
-                    choices = response.get('answeredOptions') or response.get('tokens')
+                    choices = response.get('answeredOptions') or response.get('tokens') or []
                     for answered_option in choices:
                         counts[answered_option] += 1
     return counts
