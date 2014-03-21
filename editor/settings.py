@@ -57,7 +57,9 @@ WSGI_APPLICATION = 'editor.wsgi.application'
 
 if os.environ.get('DATABASE_URL'):
     import dj_database_url
-    DATABASES['default'] =  dj_database_url.config()
+    DATABASES = {
+        'default': dj_database_url.config()
+    }
 else:
     DATABASES = {
         'default': {
