@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
     url(r'^home/(?P<key>\w+)/$', 'editor.views.authenticated_home', name='authenticated_home'),
     url(r'^home/(?P<key>\w+)/reports/pie/$', 'editor.views.pie_chart'),
+    url(r'^home/(?P<key>\w+)/reports/line/$', 'editor.views.line_chart'),
 
     url(r'^admin/', include(admin.site.urls)),
 )

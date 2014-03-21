@@ -4,8 +4,10 @@ from django.core.cache import cache
 from django.utils import simplejson
 from django.shortcuts import redirect
 from editor.models import DropboxAccessToken
-from editor.utils import analyze_question
+from editor.utils import count_question_answers
+from editor.utils import count_question_numeric_response_by_day
 from editor.utils import build_pie_chart_data
+from editor.utils import build_line_chart_data
 from editor.utils import get_app_folder
 from editor.utils import get_flow
 import dropbox
@@ -39,9 +41,21 @@ def authenticated_home(request, key):
 
 def pie_chart(request, key):
     question = request.GET['question']
+    num_days = request.GET.get('days', 5)
     access_token = DropboxAccessToken.objects.get(key=key).access_token
     client = dropbox.client.DropboxClient(access_token)
-    data = analyze_question(client, question)
+    data = count_question_answers(client, question, num_days)
     pie_data = build_pie_chart_data(data)
     return HttpResponse(simplejson.dumps(pie_data), content_type='application/json')
+
+def line_chart(request, key):
+    question = request.GET['question']
+    num_days = request.GET.get('days', 5)
+    access_token = DropboxAccessToken.objects.get(key=key).access_token
+    client = dropbox.client.DropboxClient(access_token)
+    data = count_question_numeric_response_by_day(client, question, num_days)
+    line_data = build_line_chart_data(data)
+    return HttpResponse(simplejson.dumps(line_data), content_type='application/json')
+
+
 
