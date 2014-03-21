@@ -6,7 +6,7 @@ from django.conf import settings
 import dropbox
 
 def get_flow(request):
-    callback_url = 'http://' + request.META['HTTP_HOST'] + reverse('authorize_callback')
+    callback_url = 'https://' + request.META['HTTP_HOST'] + reverse('authorize_callback')
     #session = cache.get('auth_csrf', {})
 
     #session = {}
@@ -28,4 +28,7 @@ def authorize_callback(request):
     return HttpResponseRedirect(reverse('home'))
 
 def home(request):
-    return HttpResponse(request.session['access_token'])
+    if not request.session.get('access_token'):
+        return HttpResponseRedirect(reverse('authorize'))
+    else:
+        return HttpResponse(request.session['access_token'])
