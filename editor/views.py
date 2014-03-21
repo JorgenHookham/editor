@@ -33,7 +33,7 @@ def authorize_callback(request):
     return redirect('authenticated_home', key=key)
 
 def authenticated_home(request, key):
-    access_token = DropboxAccessToken.objects.get(key=key)
+    access_token = DropboxAccessToken.objects.get(key=key).access_token
     client = dropbox.client.DropboxClient(access_token)
     return HttpResponse('hello', content_type='text/plain')
 
