@@ -1,3 +1,4 @@
+from collections import Counter
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -30,35 +31,35 @@ def home(request):
         #response_encoded = simplejson.dumps(last_response)
         #return HttpResponse(response_encoded, content_type='application/json')
 
-def tired_pie_chart(request):
-    pie_data = { 
-        "item": [ 
-            { 
-                "value": "100", 
-                "label": "May", 
-                "colour": "FFFF10AA" 
-                }, 
-            { 
-                "value": "160", 
-                "label": "June", 
-                "colour": "FFAA0AAA" 
-                }, 
-            { 
-                "value": "300", 
-                "label": "July", 
-                "colour": "FF5505AA" 
-                }, 
-            { 
-                "value": "140", 
-                "label": "August", 
-                "colour": "FF0000AA" 
-                } 
-            ] 
-    }
+def pie_chart(request):
+    question = request.GET['question']
+    access_token = request.session['access_token']
+    client = dropbox.client.DropboxClient(access_token)
+    data = analyze_question(client, question)
+    pie_data = build_pie_chart_data(data)
     return HttpResponse(simplejson.dumps(pie_data), content_type='application/json')
 
 
 #### UTILS #####
+def analyze_question(client, question):
+    counts = Counter()
+    for file_metadata in get_app_folder(client)['contents']:
+        content = get_file_content(client, file_metadata)
+        content = simplejson.loads(content)
+        for snapshot in content['snapshots']:
+            for response in snapshot['responses']:
+                if response['questionPrompt'].lower() == question.lower():
+                    for answered_option in response['answeredOptions']:
+                        counts[answered_option] += 1
+    return counts
+
+def build_pie_chart_data(data_dict):
+    colors = ["D71E15","E76517","FEB01B","FECB1B","FEDF74","FF5E49","FAAE0D","FDFBC8"]
+    pie_items = []
+    for index, key in enumerate(data_dict.keys()):
+        pie_items.append({'label':key,'value':data_dict[key],'color':colors[index]})
+    return {'item':pie_items}
+
 def get_last_reporter_export(client):
     app_folder = get_app_folder(client)
     last_response = get_last_file(app_folder)
