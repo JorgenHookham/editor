@@ -13,7 +13,8 @@ def analyze_question(client, question):
         for snapshot in content['snapshots']:
             for response in snapshot['responses']:
                 if response['questionPrompt'].lower() == question.lower():
-                    for answered_option in response['answeredOptions']:
+                    choices = response.get('answeredOptions') or response.get('tokens')
+                    for answered_option in choices:
                         counts[answered_option] += 1
     return counts
 
