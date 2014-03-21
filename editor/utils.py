@@ -36,7 +36,7 @@ def get_file_content(client, file_metadata):
     return f.read()
 
 def get_flow(request):
-    protocol = 'https' if request.is_secure() else 'http'
+    protocol = 'http' if 'localhost' in request.META['HTTP_HOST'] else 'https'
     callback_url = '%s://%s%s' % (protocol, request.META['HTTP_HOST'], reverse('authorize_callback'))
     print settings.DROPBOX_API_SECRET
     flow = dropbox.client.DropboxOAuth2Flow(settings.DROPBOX_API_KEY, settings.DROPBOX_API_SECRET, callback_url, request.session, 'dropbox-auth-csrf-token')
