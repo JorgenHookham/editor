@@ -27,7 +27,7 @@ def authorize_callback(request):
     key = ''.join(random.choice(string.ascii_uppercase) for i in range(20))
 
     # store reference to access token associated with key
-    access_token = DropboxAccessToken.objects.create(key=key,acess_token=access_token)
+    access_token = DropboxAccessToken.objects.create(key=key,access_token=access_token)
 
     # redirect to 'home'
     return redirect('authenticated_home', key=key)
@@ -39,7 +39,7 @@ def authenticated_home(request, key):
 
 def pie_chart(request, key):
     question = request.GET['question']
-    access_token = DropboxAccessToken.objects.get(key=key)
+    access_token = DropboxAccessToken.objects.get(key=key).access_token
     client = dropbox.client.DropboxClient(access_token)
     data = analyze_question(client, question)
     pie_data = build_pie_chart_data(data)
