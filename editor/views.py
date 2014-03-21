@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.conf import settings
+from django.utils import simplejson
 import dropbox
 
 def get_flow(request):
@@ -31,4 +32,11 @@ def home(request):
     if not request.session.get('access_token'):
         return HttpResponseRedirect(reverse('authorize'))
     else:
-        return HttpResponse(request.session['access_token'])
+        access_token = request.session['access_token']
+        client = dropbox.client.DropboxClient(access_token)
+        try:
+            response = client.metadata('/Apps/Reporter-App/')
+        except dropbox.rest.ErrorResponse:
+            return HttpResponse('cannot find app!')
+        response_encoded = simplejson.dumps(response)
+        return HttpResponse(response_encoded, content_type='application/json')
