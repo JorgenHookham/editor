@@ -27,7 +27,7 @@ def authorize_callback(request):
     key = ''.join(random.choice(string.ascii_uppercase) for i in range(20))
 
     # store reference to access token associated with key
-    access_token = DropboxAccessToken.objects.create(key=key,acess_token=acess_token)
+    access_token = DropboxAccessToken.objects.create(key=key,acess_token=access_token)
 
     # redirect to 'home'
     return redirect('authenticated_home', key=key)
