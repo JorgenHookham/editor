@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     url(r'^authorize/$', 'editor.views.authorize', name='authorize'),
     url(r'^authorize/callback/$', 'editor.views.authorize_callback', name='authorize_callback'),
     url(r'^$', 'editor.views.home', name='home'),
+    url(r'^reports/tired/$', 'editor.views.tired_pie_chart'),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
