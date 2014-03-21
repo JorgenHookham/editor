@@ -1,12 +1,20 @@
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 from django.conf import settings
 import dropbox
 
 def get_flow(request):
-    callback_url = 'https://' + request.META['HTTP_HOST'] + reverse('authorize_callback')
-    return dropbox.client.DropboxOAuth2Flow(settings.DROPBOX_API_KEY, settings.DROPBOX_API_SECRET, callback_url, request.session, 'dropbox-auth-csrf-token')
+    callback_url = 'http://' + request.META['HTTP_HOST'] + reverse('authorize_callback')
+    #session = cache.get('auth_csrf', {})
+
+    #session = {}
+    flow = dropbox.client.DropboxOAuth2Flow(settings.DROPBOX_API_KEY, settings.DROPBOX_API_SECRET, callback_url, request.session, 'dropbox-auth-csrf-token')
+    #cache.set('auth_csrf', session)
+    #print 'session: %s' % session
+    #print 'cache.session: %s' % cache.get('auth_csrf', {})
+    return flow
 
 def authorize(request):
     authorize_url = get_flow(request).start()
