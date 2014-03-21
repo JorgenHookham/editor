@@ -5,7 +5,7 @@ from django.conf import settings
 import dropbox
 
 def get_flow(request):
-    callback_url = 'https://' + request.HTTP_HOST + reverse('authorize_callback')
+    callback_url = 'https://' + request.META['HTTP_HOST'] + reverse('authorize_callback')
     return dropbox.client.DropboxOAuth2Flow(settings.DROPBOX_API_KEY, settings.DROPBOX_API_SECRET, callback_url, request.session, 'dropbox-auth-csrf-token')
 
 def authorize(request):
