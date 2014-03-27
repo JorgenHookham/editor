@@ -42,7 +42,7 @@ def authenticated_home(request, key):
 
 def pie_chart(request, key):
     question = request.GET['question']
-    num_days = request.GET.get('days', 5)
+    num_days = int(request.GET.get('days', 5))
     access_token = DropboxAccessToken.objects.get(key=key).access_token
     client = dropbox.client.DropboxClient(access_token)
     data = count_question_answers(client, question, num_days)
@@ -51,7 +51,7 @@ def pie_chart(request, key):
 
 def line_chart(request, key):
     question = request.GET['question']
-    num_days = request.GET.get('days', 5)
+    num_days = int(request.GET.get('days', 5))
     access_token = DropboxAccessToken.objects.get(key=key).access_token
     client = dropbox.client.DropboxClient(access_token)
     data = count_question_numeric_response_by_day(client, question, num_days)
@@ -62,7 +62,7 @@ def report_counter(request, key):
     """
     Returns the number of reports made in a period of time.
     """
-    num_days = request.GET.get('days', 1)
+    num_days = int(request.GET.get('days', 5))
     access_token = DropboxAccessToken.objects.get(key=key).access_token
     client = dropbox.client.DropboxClient(access_token)
     data = count_reports(client, num_days)
