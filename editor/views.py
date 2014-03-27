@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from editor.models import DropboxAccessToken
 from editor.utils import count_question_answers
 from editor.utils import count_question_numeric_response_by_day
+from editor.utils import build_counter_data
 from editor.utils import build_pie_chart_data
 from editor.utils import build_line_chart_data
 from editor.utils import count_reports
@@ -66,7 +67,8 @@ def report_counter(request, key):
     access_token = DropboxAccessToken.objects.get(key=key).access_token
     client = dropbox.client.DropboxClient(access_token)
     data = count_reports(client, num_days)
-    return HttpResponse(simplejson.dumps(data), content_type='application/json')
+    counter_data = build_counter_data(data)
+    return HttpResponse(simplejson.dumps(counter_data), content_type='application/json')
 
 
 

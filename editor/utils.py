@@ -89,6 +89,15 @@ def build_line_chart_data(data_list):
     }
     return data
 
+def build_counter_data(counter_data):
+    data = {
+        "item": {
+            "value": counter_data,
+            "text": 'reports'
+        }
+    }
+    return data
+
 def get_app_folder(client):
     """
     Get all the files in the reporter export folder
