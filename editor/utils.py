@@ -19,11 +19,12 @@ def count_question_answers(client, question, num_days=None):
         content = get_file_content(client, file_metadata)
         content = simplejson.loads(content)
         for snapshot in content['snapshots']:
-            for response in snapshot['responses']:
-                if response['questionPrompt'].lower() == question.lower():
-                    choices = response.get('answeredOptions') or response.get('tokens') or []
-                    for answered_option in choices:
-                        counts[answered_option] += 1
+            if 'responses' in snapshot:
+                for response in snapshot['responses']:
+                    if response['questionPrompt'].lower() == question.lower():
+                        choices = response.get('answeredOptions') or response.get('tokens') or []
+                        for answered_option in choices:
+                            counts[answered_option] += 1
     return counts
 
 def count_question_numeric_response_by_day(client, question, num_days=None):
@@ -42,9 +43,10 @@ def count_question_numeric_response_by_day(client, question, num_days=None):
         day_value = 0
 
         for snapshot in content['snapshots']:
-            for response in snapshot['responses']:
-                if response['questionPrompt'].lower() == question.lower():
-                    day_value += float(response['numericResponse'])
+            if 'responses' in snapshot:
+                for response in snapshot['responses']:
+                    if response['questionPrompt'].lower() == question.lower():
+                        day_value += float(response['numericResponse'])
 
         data.append(day_value)
 
