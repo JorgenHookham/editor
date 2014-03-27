@@ -50,6 +50,20 @@ def count_question_numeric_response_by_day(client, question, num_days=None):
 
     return data
 
+def count_reports(client, num_days=1):
+  """
+  Counts the number of reports made in a period of time. Assumes that a snapshot
+  is synonymous with report.
+  """
+  count = 0
+  files = get_app_folder_by_date(client)[-1 * num_days:]
+  for file_metadata in files:
+    content = get_file_content(client, file_metadata)
+    content = simplejson.loads(content)
+    if 'snapshots' in content:
+      for snapshot in content['snapshots']:
+        count += 1
+  return count
 
 def build_pie_chart_data(data_dict):
     colors = ["D71E15","E76517","FEB01B","FECB1B","FEDF74","FF5E49","FAAE0D","FDFBC8"]
@@ -100,7 +114,6 @@ def get_app_folder_by_date(client):
 
     return files
 
-       
 def get_file_content(client, file_metadata):
     f, metadata = client.get_file_and_metadata(file_metadata['path'])
     return f.read()
@@ -121,4 +134,4 @@ def get_last_file(folder):
         elif parser.parse(file_metadata['modified']) > parser.parse(last_file['modified']):
             last_file = file_metadata
     return last_file
- 
+

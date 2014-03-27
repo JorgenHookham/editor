@@ -8,6 +8,7 @@ from editor.utils import count_question_answers
 from editor.utils import count_question_numeric_response_by_day
 from editor.utils import build_pie_chart_data
 from editor.utils import build_line_chart_data
+from editor.utils import count_reports
 from editor.utils import get_app_folder
 from editor.utils import get_flow
 import dropbox
@@ -56,6 +57,16 @@ def line_chart(request, key):
     data = count_question_numeric_response_by_day(client, question, num_days)
     line_data = build_line_chart_data(data)
     return HttpResponse(simplejson.dumps(line_data), content_type='application/json')
+
+def report_counter(request, key):
+    """
+    Returns the number of reports made in a period of time.
+    """
+    num_days = request.GET.get('days', 1)
+    access_token = DropboxAccessToken.objects.get(key=key).access_token
+    client = dropbox.client.DropboxClient(access_token)
+    data = count_reports(client, num_days)
+    return HttpResponse(simplejson.dumps(data), content_type='application/json')
 
 
 
